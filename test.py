@@ -58,8 +58,6 @@ def validate_login_paramstype(func):        #Decorator function that takes up th
     return wrapper
 
 
-
-
 class User(db.Model):  #The User class is defined as a subclass of db.Model, representing a user entity in the database. It has columns for id, username, and password. 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
@@ -68,7 +66,6 @@ class User(db.Model):  #The User class is defined as a subclass of db.Model, rep
     def __init__(self, username, password):     #The __init__ method is used to set the initial values of the username and password attributes.
         self.username = username
         self.password = password
-
 
 @app.route('/signup', methods=['POST'])
 @validate_params(['username', 'password'])
@@ -116,7 +113,6 @@ def home():
     user = User.query.get(current_user_id)
 
     return jsonify({'message': f'Welcome, {user.username}!'}), 200
-
 
 if __name__ == '__main__':
     with app.app_context():

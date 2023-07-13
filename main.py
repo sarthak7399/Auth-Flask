@@ -1,26 +1,20 @@
-from flask import Flask, jsonify, request
-from flask_restful import Resource, Api
-import fun
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
+from app.routes import auth_routes
+
 app = Flask(__name__)
-api = Api(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = 'BIHUJFegdsal'
 
-class Hello(Resource):
-    def get(self):
-        return jsonify({'message': 'hello world'})
-  
-    def post(self):
-        data = request.get_json()     # status code
-        return jsonify({'data': data}), 201
-
-# another resource to calculate the square of a number
-class Square(Resource):
-  
-    def get(self, num):
-        return jsonify({'square': num**2})
+db = SQLAlchemy(app)
+jwt = JWTManager(app)
 
 
-api.add_resource(Hello, '/')
-api.add_resource(Square, '/square/<int:num>')
+app.register_blueprint(auth_routes)
 
 if __name__ == '__main__':
-    app.run(debug=True)     # runs the web server, debug true means any changes will be re-run
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
