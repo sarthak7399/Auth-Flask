@@ -32,7 +32,7 @@ def home_route():
         result, status_code = home()
         return jsonify(result), status_code
     except Exception as e:
-            return jsonify({'message': 'Internal Server error', 'error': str(e), "status code": 500})
+        return jsonify({'message': 'Internal Server error', 'error': str(e), "status code": 500})
 
 # auth_routes.add_url_rule('/signup', view_func=signup, methods=['POST'])      
 # auth_routes.add_url_rule('/login', view_func=login, methods=['POST'])
