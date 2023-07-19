@@ -5,11 +5,19 @@ from middleware import jwt_required, create_access_token, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from middleware import validate_params, perform_login_validation
 import logging
+import openai
+import os
+from openai import ChatCompletion
+from dotenv import load_dotenv
+
 
 #salt = bcrypt.gensalt()
 
 # Set up logging configuration
 logging.basicConfig(level=logging.DEBUG)
+
+load_dotenv()
+openai.api_key = os.getenv('API_Key')
 
 def signup():
     username = request.json.get('username')
@@ -54,3 +62,19 @@ def home():
     user = User.query.get(current_user_id)
 
     return {'message': f'Welcome, {user.username}!'}, 200
+
+def ask():
+    query=request.json.get('query')
+
+    #response = ChatCompletion.create(
+    #    model="gpt-3.5-turbo",
+    #    messages=[message],
+    #)
+
+    response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Who is the Prime Minister of India?"}]
+    )
+    return response.choices[0].message.get("content"), 200
